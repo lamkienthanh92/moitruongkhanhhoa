@@ -214,7 +214,11 @@ export function MapView({ point, sourceDists, ward, closestRoad }) {
                              // faster than SVG once we're drawing thousands
                              // of choropleth cells.
       });
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      // tile.openstreetmap.org co chinh sach su dung rat nghiem ngat, cam
+      // nhung khi nhung vao app production ma khong xin phep truoc, va co
+      // the bi chan bat ky luc nao khong bao truoc -- doi sang tile cua
+      // Wikimedia (duoc phep dung cong khai, khong can dang ky API key).
+      L.tileLayer("https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png", {
         maxZoom: 19,
         attribution: "&copy; OpenStreetMap contributors",
       }).addTo(mapRef.current);
