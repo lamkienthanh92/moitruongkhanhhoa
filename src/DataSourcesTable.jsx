@@ -43,11 +43,11 @@ const OTHER_ROWS = [
     confidence: "high",
   },
   {
-    layer: "Ward/commune boundaries (168 wards)",
-    source: "vietnamese-provinces-database (GitHub, community-maintained)",
-    resolution: "Vector polygon, simplified (Ramer-Douglas-Peucker, ~30m tolerance) from original survey-grade boundaries",
-    vintage: "Post-2025 administrative merger",
-    confidence: "medium",
+    layer: "Ward/commune boundaries",
+    source: "Not built for Khánh Hòa (skipped by request)",
+    resolution: "N/A — WARDS is intentionally empty; findWard()/getNearbyWards() always return null/[]",
+    vintage: "N/A",
+    confidence: "n/a",
   },
   {
     layer: "Climate normals (temp, humidity, wind, rain)",
