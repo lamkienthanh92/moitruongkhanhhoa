@@ -11,14 +11,31 @@
 // Sau khi day code nay len GitHub, SUA lai GITHUB_RAW_BASE ben duoi cho
 // dung ten user/repo/branch cua ban neu khac.
 
-const GITHUB_RAW_BASE =
-  "https://raw.githubusercontent.com/lamkienthanh92/Onehealthkhanhhoa/main/grid-data";
+// Dung jsDelivr (CDN chinh thuc, production-ready cho file GitHub) thay vi
+// raw.githubusercontent.com -- raw.githubusercontent KHONG duoc thiet ke
+// de lam CDN san xuat (GitHub tu noi trong tai lieu), va thuc te da gap
+// loi 404 khong on dinh voi 1 file (grid_water.json) du file hoan toan
+// hop le tren repo va cache-busting cung khong sua duoc -- nhieu kha nang
+// la co che gioi han/chan ngam cua GitHub voi truy cap fetch() tu web
+// ngoai. jsDelivr duoc jsDelivr + GitHub xac nhan la dung cho truong hop
+// nay, ho tro toi 50MB/file (file nang nhat cua ta ~10.6MB, du xa).
+const JSDELIVR_BASE =
+  "https://cdn.jsdelivr.net/gh/lamkienthanh92/moitruongkhanhhoa@main/grid-data";
 
 const LAYER_KEYS = [
   "no2", "so2", "co", "o3", "lst", "nightlights",
   "builtup", "water", "population", "elevation",
   "landcover", "treecover", "forestloss",
 ];
+
+// grid_water.json rieng bi loi 404 dai dang (da thu: cache-busting,
+// Netlify clear-cache-and-deploy, purge jsDelivr xac nhan thanh cong)
+// nhung van 404 -- doi han sang ten file moi de loai tru moi kha nang
+// bi cache/loi gan lien voi dung ten cu o bat ky dau (GitHub, jsDelivr).
+function fileNameFor(key) {
+  if (key === "water") return "grid_water_v2.json";
+  return `grid_${key}.json`;
+}
 
 let _grids = null;
 let _loadPromise = null;
@@ -29,12 +46,25 @@ export function loadGrids() {
 
   _loadPromise = Promise.all(
     LAYER_KEYS.map((key) =>
-      fetch(`${GITHUB_RAW_BASE}/grid_${key}.json`).then((res) => {
-        if (!res.ok) {
-          throw new Error(`grid_${key}.json fetch failed: HTTP ${res.status}`);
-        }
-        return res.json().then((data) => [key, data]);
-      })
+      fetch(`${JSDELIVR_BASE}/${fileNameFor(key)}`)
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`${fileNameFor(key)} fetch failed: HTTP ${res.status}`);
+          }
+          return res.text();
+        })
+        .then((text) => {
+          try {
+            return [key, JSON.parse(text)];
+          } catch (parseErr) {
+            // Bao gom ca kich thuoc text nhan duoc de de chan doan: neu
+            // qua nho/bi cat cut so voi file that (vai MB), day chinh la
+            // dau hieu file do tren GitHub bi hong/thieu.
+            throw new Error(
+              `${fileNameFor(key)}: invalid JSON (${parseErr.message}); received ${text.length} bytes -- check this file on GitHub, it is likely truncated or empty`
+            );
+          }
+        })
     )
   )
     .then((entries) => {
