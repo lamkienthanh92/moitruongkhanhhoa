@@ -1,0 +1,9 @@
+{
+  "short_name": "One Health Khánh Hòa",
+  "name": "One Health Exposure Explorer — Khánh Hòa",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#1C3B2E",
+  "background_color": "#F6F5EF"
+}
