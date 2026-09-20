@@ -348,10 +348,9 @@ export function MapView({ point, sourceDists, ward, closestRoad }) {
         }}
       />
       <p style={{ fontSize: 9, color: color.inkFaint, marginTop: 6, lineHeight: 1.5 }}>
-        Solid boundary = ward containing this point · dashed = neighboring
-        wards (context only). Grid overlay shows real cell boundaries at
-        their actual resolution (population: 100m · pollution density:
-        ~280m) — colored by value, not a blurred estimate.
+        Grid overlay shows real cell boundaries at their actual resolution
+        (population: 100m · pollution density: ~280m) — colored by value,
+        not a blurred estimate.
       </p>
     </div>
   );
