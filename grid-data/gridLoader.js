@@ -12,7 +12,7 @@
 // dung ten user/repo/branch cua ban neu khac.
 
 const GITHUB_RAW_BASE =
-  "https://raw.githubusercontent.com/lamkienthanh92/Onehealthkhanhhoa/main/grid-data";
+  "https://raw.githubusercontent.com/lamkienthanh92/moitruongkhanhhoa/main/grid-data";
 
 const LAYER_KEYS = [
   "no2", "so2", "co", "o3", "lst", "nightlights",
