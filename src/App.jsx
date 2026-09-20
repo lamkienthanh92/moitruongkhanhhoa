@@ -74,7 +74,7 @@ function parseCoord(s) {
   if (!m) return null;
   const a = parseFloat(m[1]),
     b = parseFloat(m[2]);
-  if (isNaN(a) || isNaN(b) || a < 10 || a > 11 || b < 106 || b > 107)
+  if (isNaN(a) || isNaN(b) || a < 11.3 || a > 12.85 || b < 108.6 || b > 109.45)
     return null;
   return { lat: a, lng: b };
 }
@@ -309,7 +309,7 @@ export default function App() {
                 fontFamily: font.mono,
                 fontSize: 14,
               }}
-              placeholder="10.758773, 106.649111"
+              placeholder="12.2451, 109.1943"
               value={coord}
               onChange={(e) => setCoord(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && doSearch()}
