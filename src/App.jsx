@@ -390,9 +390,10 @@ export default function App() {
               padding: "7px 12px",
             }}
           >
-            ⚠️ Failed to load environmental data: {gridsError}. Check that{" "}
-            <code>/public/data/grids.json</code> was deployed alongside the
-            app, then reload the page.
+            ⚠️ Failed to load environmental data: {gridsError}. Check that
+            all 13 files in{" "}
+            <code>grid-data/</code> on GitHub are valid (not truncated), then
+            reload the page.
           </div>
         )}
         {err && (
