@@ -28,6 +28,15 @@ const LAYER_KEYS = [
   "landcover", "treecover", "forestloss",
 ];
 
+// grid_water.json rieng bi loi 404 dai dang (da thu: cache-busting,
+// Netlify clear-cache-and-deploy, purge jsDelivr xac nhan thanh cong)
+// nhung van 404 -- doi han sang ten file moi de loai tru moi kha nang
+// bi cache/loi gan lien voi dung ten cu o bat ky dau (GitHub, jsDelivr).
+function fileNameFor(key) {
+  if (key === "water") return "grid_water_v2.json";
+  return `grid_${key}.json`;
+}
+
 let _grids = null;
 let _loadPromise = null;
 let _error = null;
@@ -37,10 +46,10 @@ export function loadGrids() {
 
   _loadPromise = Promise.all(
     LAYER_KEYS.map((key) =>
-      fetch(`${JSDELIVR_BASE}/grid_${key}.json`)
+      fetch(`${JSDELIVR_BASE}/${fileNameFor(key)}`)
         .then((res) => {
           if (!res.ok) {
-            throw new Error(`grid_${key}.json fetch failed: HTTP ${res.status}`);
+            throw new Error(`${fileNameFor(key)} fetch failed: HTTP ${res.status}`);
           }
           return res.text();
         })
@@ -52,7 +61,7 @@ export function loadGrids() {
             // qua nho/bi cat cut so voi file that (vai MB), day chinh la
             // dau hieu file do tren GitHub bi hong/thieu.
             throw new Error(
-              `grid_${key}.json: invalid JSON (${parseErr.message}); received ${text.length} bytes -- check this file on GitHub, it is likely truncated or empty`
+              `${fileNameFor(key)}: invalid JSON (${parseErr.message}); received ${text.length} bytes -- check this file on GitHub, it is likely truncated or empty`
             );
           }
         })
