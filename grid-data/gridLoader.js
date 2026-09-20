@@ -11,8 +11,16 @@
 // Sau khi day code nay len GitHub, SUA lai GITHUB_RAW_BASE ben duoi cho
 // dung ten user/repo/branch cua ban neu khac.
 
-const GITHUB_RAW_BASE =
-  "https://raw.githubusercontent.com/lamkienthanh92/moitruongkhanhhoa/main/grid-data";
+// Dung jsDelivr (CDN chinh thuc, production-ready cho file GitHub) thay vi
+// raw.githubusercontent.com -- raw.githubusercontent KHONG duoc thiet ke
+// de lam CDN san xuat (GitHub tu noi trong tai lieu), va thuc te da gap
+// loi 404 khong on dinh voi 1 file (grid_water.json) du file hoan toan
+// hop le tren repo va cache-busting cung khong sua duoc -- nhieu kha nang
+// la co che gioi han/chan ngam cua GitHub voi truy cap fetch() tu web
+// ngoai. jsDelivr duoc jsDelivr + GitHub xac nhan la dung cho truong hop
+// nay, ho tro toi 50MB/file (file nang nhat cua ta ~10.6MB, du xa).
+const JSDELIVR_BASE =
+  "https://cdn.jsdelivr.net/gh/lamkienthanh92/moitruongkhanhhoa@main/grid-data";
 
 const LAYER_KEYS = [
   "no2", "so2", "co", "o3", "lst", "nightlights",
@@ -27,16 +35,9 @@ let _error = null;
 export function loadGrids() {
   if (_loadPromise) return _loadPromise;
 
-  // Cache-busting: khoi tao 1 lan/phien tai trang, gan vao MOI url fetch.
-  // raw.githubusercontent.com (CDN cua GitHub) co lich su tung bi bao loi
-  // cache sai (tra ve 404/noi dung cu da luu tu truoc, khong tu cap nhat
-  // dung luc) -- them query param nay buoc CDN coi day la yeu cau moi,
-  // khong khop voi ban cache 404 sai truoc do.
-  const CACHE_BUST = Date.now();
-
   _loadPromise = Promise.all(
     LAYER_KEYS.map((key) =>
-      fetch(`${GITHUB_RAW_BASE}/grid_${key}.json?cb=${CACHE_BUST}`)
+      fetch(`${JSDELIVR_BASE}/grid_${key}.json`)
         .then((res) => {
           if (!res.ok) {
             throw new Error(`grid_${key}.json fetch failed: HTTP ${res.status}`);
