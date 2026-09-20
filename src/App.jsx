@@ -268,7 +268,7 @@ export default function App() {
               }}
             >
               {ROAD_NAMES.length} roads · {SOURCES.length.toLocaleString()}{" "}
-              OSM sources · 168 wards · air · land · water · animal layers
+              OSM sources · air · land · water · animal layers
             </p>
           </div>
         </div>
