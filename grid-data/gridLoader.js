@@ -27,9 +27,16 @@ let _error = null;
 export function loadGrids() {
   if (_loadPromise) return _loadPromise;
 
+  // Cache-busting: khoi tao 1 lan/phien tai trang, gan vao MOI url fetch.
+  // raw.githubusercontent.com (CDN cua GitHub) co lich su tung bi bao loi
+  // cache sai (tra ve 404/noi dung cu da luu tu truoc, khong tu cap nhat
+  // dung luc) -- them query param nay buoc CDN coi day la yeu cau moi,
+  // khong khop voi ban cache 404 sai truoc do.
+  const CACHE_BUST = Date.now();
+
   _loadPromise = Promise.all(
     LAYER_KEYS.map((key) =>
-      fetch(`${GITHUB_RAW_BASE}/grid_${key}.json`)
+      fetch(`${GITHUB_RAW_BASE}/grid_${key}.json?cb=${CACHE_BUST}`)
         .then((res) => {
           if (!res.ok) {
             throw new Error(`grid_${key}.json fetch failed: HTTP ${res.status}`);
